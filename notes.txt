@@ -1,0 +1,8 @@
+// create network
+docker network create hazelcast-network
+
+// create cluster
+docker run -it --network hazelcast-network -e HZ_CLUSTERNAME=test -p 5701:5701 hazelcast/hazelcast:latest
+
+// management center
+docker run --network hazelcast-network -p 8080:8080 hazelcast/management-center:latest-snapshot
