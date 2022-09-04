@@ -2,34 +2,39 @@
 
 namespace TestAPI.Services
 {
-    public class HazelcastWorker
+    public class HazelcastWorker<TKey, TValue>
     {
         private readonly IHazelcastClient _client;
-        public HazelcastWorker(IHazelcastClient client)
+        private readonly string _map;
+        public HazelcastWorker(IHazelcastClient client, string map)
         {
             _client = client;
+            _map = map;
         }
 
-        public async Task<int> GetRecordAsync(string pan)
+        public async Task<TValue> GetRecordAsync(TKey key)
         {
-            var map = await _client.GetMapAsync<string, int>("invalid").ConfigureAwait(false);
-            var rec = await map.GetAsync(pan).ConfigureAwait(false);
+            var map = await _client.GetMapAsync<TKey, TValue>(_map).ConfigureAwait(false);
+            var rec = await map.GetAsync(key).ConfigureAwait(false);
             return rec;
         }
 
-        public async Task PutRecordAsync(string pan) 
+        public async Task SetRecordAsync(TKey key, TValue value)
         {
-            var map = await _client.GetMapAsync<string, int>("invalid").ConfigureAwait(false);
-            int? rec = await map.GetAsync(pan).ConfigureAwait(false);
-            if(rec != null)
-            {
-                rec++;
-                await map.PutAsync(pan, (int)rec).ConfigureAwait(false);
-            }
-            else
-            {
-                await map.SetAsync(pan, 1).ConfigureAwait(false);
-            }
+            var map = await _client.GetMapAsync<TKey, TValue>(_map).ConfigureAwait(false);
+            await map.SetAsync(key, value).ConfigureAwait(false);
+        }
+
+        public async Task PutRecordAsync(TKey key, TValue value)
+        {
+            var map = await _client.GetMapAsync<TKey, TValue>(_map).ConfigureAwait(false);
+            await map.PutAsync(key, value).ConfigureAwait(false);
+        }
+
+        public async Task DeleteRecordAsync(TKey key)
+        {
+            var map = await _client.GetMapAsync<TKey, TValue>(_map).ConfigureAwait(false);
+            await map.DeleteAsync(key).ConfigureAwait(false);
         }
     }
 }

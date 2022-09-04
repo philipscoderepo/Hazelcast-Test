@@ -1,8 +1,10 @@
 ﻿namespace TestAPI.Services
 {
-    public interface IHazelcastService
+    public interface IHazelcastService<TKey, TValue>
     {
-        Task<int> GetRecordAsync(string key);
-        Task PutRecordAsync(string key);
+        Task<TValue> GetRecordAsync(TKey key);
+        Task SetRecordAsync(TKey key, TValue value);
+        Task PutRecordAsync(TKey key, TValue value);
+        Task DeleteRecordAsync(TKey key);
     }
 }

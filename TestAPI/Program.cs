@@ -1,4 +1,5 @@
 using TestAPI.Services;
+using Hazelcast;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -9,7 +10,13 @@ builder.Services.AddControllers();
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
 
-builder.Services.AddSingleton<IHazelcastService, HazelcastService>();
+var options = new HazelcastOptions();
+options.ClusterName = "dev";
+options.ClientName = "net-client";
+options.Networking.Addresses.Add("localhost:5701");
+
+builder.Services.AddSingleton<IHazelcastService<string, int>, HazelcastService<string, int>>
+    (service => new HazelcastService<string, int>(options, "login_attempts"));
 
 var app = builder.Build();
 
