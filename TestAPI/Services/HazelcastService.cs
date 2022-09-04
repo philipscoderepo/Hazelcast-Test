@@ -10,7 +10,7 @@ namespace TestAPI.Services
         public HazelcastService(HazelcastOptions options, string map)
         {
             _client = HazelcastClientFactory.GetNewStartingClient(options).Client;
-            _map = map;
+            _map = map; 
         }
         public async Task<TValue> GetRecordAsync(TKey key)
         {
@@ -23,10 +23,20 @@ namespace TestAPI.Services
             var worker = new HazelcastWorker<TKey, TValue>(_client, _map);
             await worker.SetRecordAsync(key, value).ConfigureAwait(false);
         }
+        public async Task SetRecordAsync(TKey key, TValue value, TimeSpan timeToLive)
+        {
+            var worker = new HazelcastWorker<TKey, TValue>(_client, _map);
+            await worker.SetRecordAsync(key, value, timeToLive).ConfigureAwait(false);
+        }
         public async Task PutRecordAsync(TKey key, TValue value)
         {
             var worker = new HazelcastWorker<TKey, TValue>(_client, _map);
             await worker.PutRecordAsync(key, value).ConfigureAwait(false);
+        }
+        public async Task PutRecordAsync(TKey key, TValue value, TimeSpan timeToLive)
+        {
+            var worker = new HazelcastWorker<TKey, TValue>(_client, _map);
+            await worker.PutRecordAsync(key, value, timeToLive).ConfigureAwait(false);
         }
         public async Task DeleteRecordAsync(TKey key)
         {

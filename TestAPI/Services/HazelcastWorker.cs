@@ -25,10 +25,22 @@ namespace TestAPI.Services
             await map.SetAsync(key, value).ConfigureAwait(false);
         }
 
+        public async Task SetRecordAsync(TKey key, TValue value, TimeSpan timeToLive)
+        {
+            var map = await _client.GetMapAsync<TKey, TValue>(_map).ConfigureAwait(false);
+            await map.SetAsync(key, value, timeToLive).ConfigureAwait(false);
+        }
+
         public async Task PutRecordAsync(TKey key, TValue value)
         {
             var map = await _client.GetMapAsync<TKey, TValue>(_map).ConfigureAwait(false);
             await map.PutAsync(key, value).ConfigureAwait(false);
+        }
+
+        public async Task PutRecordAsync(TKey key, TValue value, TimeSpan timeToLive)
+        {
+            var map = await _client.GetMapAsync<TKey, TValue>(_map).ConfigureAwait(false);
+            await map.PutAsync(key, value, timeToLive).ConfigureAwait(false);
         }
 
         public async Task DeleteRecordAsync(TKey key)

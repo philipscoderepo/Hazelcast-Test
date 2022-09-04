@@ -29,7 +29,7 @@ namespace TestAPI.Controllers
         public async Task<JsonResult> AddAttempt(string user)
         {
             var rec = await _service.GetRecordAsync(user).ConfigureAwait(false);
-            await _service.PutRecordAsync(user, ++rec).ConfigureAwait(false);
+            await _service.PutRecordAsync(user, ++rec, new TimeSpan(24, 0, 0)).ConfigureAwait(false);
             var newCount = await _service.GetRecordAsync(user).ConfigureAwait(false);
             return new JsonResult("new count: " + newCount);
         }
